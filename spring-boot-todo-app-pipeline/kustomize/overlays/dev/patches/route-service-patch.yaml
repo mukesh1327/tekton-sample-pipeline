@@ -1,0 +1,4 @@
+[
+  {"op": "add", "path": "/spec/subdomain", "value": "spring-boot-todo-dev"},
+  {"op": "add", "path": "/spec/to/name", "value": "spring-boot-todo-dev"}
+]

@@ -1,0 +1,106 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: kustomize-update-imagetag-task
+spec:
+  description: |-
+    This task updates the kustomization file with new ImageTag and
+    push the updated code to github. 
+  params:
+    - default: ''
+      description: |
+        Git user name for performing git operation.
+      name: git_user_name
+      type: string
+    - default: ''
+      description: |
+        Git user email for performing git operation.
+      name: git_user_email
+      type: string
+    - default: ''
+      description: |
+        Git branch for performing git operation.
+      name: git_revision
+      type: string
+    - default: ''
+      description: |
+        Name used in when building the image.
+      name: new_image_name
+      type: string
+    - default: ''
+      description: |
+        Name previously used in kustomize.
+      name: old_image_name
+      type: string
+    - default: ''
+      description: |
+        Folder where kustomization yaml is present.
+      name: kustomize_dir
+      type: string
+    - default: ''
+      description: |
+        Env for image tag
+      name: env_image_tag
+      type: string
+    - default: ''
+      description: |
+        Image tag.
+      name: image_tag
+      type: string
+    - default: 'quay.io/zagaos/rhel8-git-pipelines:v1-kustomize'
+      description: |
+        Image with kustmization and Git.
+      name: kustomizeGitImage
+      type: string
+  steps:
+    - computeResources: {}
+      image: $(params.kustomizeGitImage)
+      name: update-image-tagname
+      script: |
+        #!/usr/bin/env sh
+
+        SHORT_COMMIT_ID=$(echo $(params.image_tag) | cut -c 1-7)
+
+        kustomize edit set image $(params.old_image_name)=$(params.new_image_name):$(params.env_image_tag)${SHORT_COMMIT_ID}
+
+        echo "Updated the image $(params.new_image_name) with tag $(params.env_image_tag)${SHORT_COMMIT_ID}"
+      workingDir: $(workspaces.source.path)/$(params.kustomize_dir)
+    - computeResources: {}
+      image: $(params.kustomizeGitImage)
+      name: push-update
+      script: |
+        #!/usr/bin/env sh
+
+        SHORT_COMMIT_ID=$(echo $(params.image_tag) | cut -c 1-7)
+
+        git config --global --add safe.directory /workspace/source
+
+        git config user.name $(params.git_user_name)
+        git config user.email $(params.git_user_email)
+
+        if git diff --exit-code;
+        then
+          echo "No changes staged, skipping add/commit"
+        else
+          
+          echo "Changes made in $(params.kustomize_dir)/kustomization.yaml \
+                 `cat $(params.kustomize_dir)/kustomization.yaml | grep -e newTag -e newName` \
+                  and commiting to git"
+
+          git commit -am "Updated the image tag to $(params.env_image_tag)${SHORT_COMMIT_ID} in $(params.kustomize_dir)"
+          git checkout -b $(params.git_revision)
+          git push -u origin $(params.git_revision)
+        fi
+      workingDir: $(workspaces.source.path)
+    - computeResources: {}
+      image: $(params.kustomizeGitImage)
+      name: cleanup-dir
+      script: |
+        #!/usr/bin/env sh
+
+        rm -rf *
+        echo "Cleared everything"
+      workingDir: $(workspaces.source.path)
+  workspaces:
+    - description: The git repo will be cloned onto the volume backing this Workspace.
+      name: source

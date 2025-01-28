@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: spring-boot-todo
+  labels:
+    app: spring-boot-todo
+spec:
+  ports:
+    - name: 9001-tcp
+      protocol: TCP
+      port: 9001
+      targetPort: 9001
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  selector:
+    app: spring-boot-todo
+    

@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: argocd-sync-and-wait-task
+spec:
+  description: |-
+    This task syncs (deploys) an Argo CD application and waits for it to be healthy.
+    To do so, it requires the address of the Argo CD server and some form of authentication either a username/password or an authentication token.
+  params:
+    - description: name of the application to sync
+      name: application-name
+      type: string
+    - default: HEAD
+      description: the revision to sync to
+      name: revision
+      type: string
+    - default: '--'
+      name: flags
+      type: string
+    - default: 'registry.redhat.io/openshift-gitops-1/argocd-rhel8@sha256:6821ba7a3b8d83c612be44c4da08f9b81c37c1fd678c88ef4fe7bebad7eebac3'
+      name: argocd_image
+      type: string
+  stepTemplate:
+    computeResources: {}
+    envFrom:
+      - configMapRef:
+          name: tkn-argocd-env-configmap
+      - secretRef:
+          name: tkn-argocd-basicauth
+  steps:
+    - computeResources: {}
+      image: $(params.argocd_image)
+      name: sync-wait
+      script: |
+
+        argocd login --username=${ARGOCD_USERNAME} --password=${ARGOCD_PASSWORD} ${ARGOCD_SERVER} --insecure ;
+
+        argocd app sync $(params.application-name) --revision $(params.revision)

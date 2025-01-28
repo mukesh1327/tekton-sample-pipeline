@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base
+
+- ./resources/route.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: spring-boot-todo
+  app.kubernetes.io/managed-by: kustomize
+
+replicas:
+- name: spring-boot-todo
+  count: 1
+
+patches:
+
+- path: ./patches/deployment-resources-patch.yaml
+  target: 
+    kind: Deployment
+    group: apps
+    version: v1
+    name: spring-boot-todo
+- path: ./patches/route-service-patch.yaml
+  target: 
+    kind: Route
+    group: route.openshift.io
+    version: v1
+    name: spring-boot-todo
+
+configMapGenerator:
+- name: spring-boot-todo-configs
+  envs:
+  - ./resources/configmap.env
+  options:
+    disableNameSuffixHash: true
+    labels:
+      app: spring-boot-todo
+
+images:
+- name: quay.io/mugicoder13/spring-boot-todo
+  newName: quay.io/mugicoder13/spring-boot-todo
+  newTag: "latest"

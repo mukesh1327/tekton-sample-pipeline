@@ -1,0 +1,164 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: maven-task
+spec:
+  description: This Task can be used to run a Maven build.
+  params:
+    - default: 'registry.redhat.io/ubi8/openjdk-17@sha256:a8165bc2cd5051a96d6937e25ed03155bbd4b731da6e58cebfe2ea83209c16d8'
+      description: Maven base image
+      name: maven_image
+      type: string
+    - default: 'registry.redhat.io/ubi8/ubi-minimal@sha256:6825946f10e8c81586fa7815c4f06016af05cfc231d921ec9699402a6655d201'
+      description: Maven settings setup image
+      name: maven_settings_image
+      type: string
+    - default: .
+      description: change the directory where the project is present
+      name: project_dir
+      type: string
+    - default:
+        - package
+      description: maven goals to run
+      name: goals
+      type: array
+    - default: ''
+      description: Optional parameters
+      name: opt_params
+      type: string
+    - default: ''
+      description: The Maven repository mirror url
+      name: maven_mirror_url
+      type: string
+    - default: ''
+      description: The username for the server
+      name: server_user
+      type: string
+    - default: ''
+      description: The password for the server
+      name: server_password
+      type: string
+    - default: ''
+      description: The username for the proxy server
+      name: proxy_user
+      type: string
+    - default: ''
+      description: The password for the proxy server
+      name: proxy_password
+      type: string
+    - default: ''
+      description: Port number for the proxy server
+      name: proxy_port
+      type: string
+    - default: ''
+      description: Proxy server Host
+      name: proxy_host
+      type: string
+    - default: ''
+      description: Non proxy server host
+      name: proxy_non_proxy_hosts
+      type: string
+    - default: http
+      description: Protocol for the proxy ie http or https
+      name: proxy_protocol
+      type: string
+    - default: .
+      description: The context directory within the repository for sources on which we want to execute maven goals.
+      name: context_dir
+      type: string
+  steps:
+    - computeResources: {}
+      env:
+        - name: HOME
+          value: /tekton/home
+      image: $(params.maven_settings_image)
+      name: mvn-settings
+      script: |
+        #!/usr/bin/env bash
+
+        [[ -f $(workspaces.maven-settings.path)/settings.xml ]] && \
+        echo 'using existing $(workspaces.maven-settings.path)/settings.xml' && exit 0
+
+        cat > $(workspaces.maven-settings.path)/settings.xml <<EOF
+        <settings>
+          <servers>
+            <!-- The servers added here are generated from environment variables. Don't change. -->
+            <!-- ### SERVER's USER INFO from ENV ### -->
+          </servers>
+          <mirrors>
+            <!-- The mirrors added here are generated from environment variables. Don't change. -->
+            <!-- ### mirrors from ENV ### -->
+          </mirrors>
+          <proxies>
+            <!-- The proxies added here are generated from environment variables. Don't change. -->
+            <!-- ### HTTP proxy from ENV ### -->
+          </proxies>
+        </settings>
+        EOF
+
+        xml=""
+        if [ -n "$(params.proxy_host)" -a -n "$(params.proxy_port)" ]; then
+          xml="<proxy>\
+            <id>genproxy</id>\
+            <active>true</active>\
+            <protocol>$(params.proxy_protocol)</protocol>\
+            <host>$(params.proxy_host)</host>\
+            <port>$(params.proxy_port)</port>"
+          if [ -n "$(params.proxy_user)" -a -n "$(params.proxy_password)" ]; then
+            xml="$xml\
+                <username>$(params.proxy_user)</username>\
+                <password>$(params.proxy_password)</password>"
+          fi
+          if [ -n "$(params.proxy_non_proxy_hosts)" ]; then
+            xml="$xml\
+                <nonProxyHosts>$(params.proxy_non_proxy_hosts)</nonProxyHosts>"
+          fi
+          xml="$xml\
+              </proxy>"
+          sed -i "s|<!-- ### HTTP proxy from ENV ### -->|$xml|" $(workspaces.maven-settings.path)/settings.xml
+        fi
+
+        if [ -n "$(params.server_user)" -a -n "$(params.server_password)" ]; then
+          xml="<server>\
+            <id>serverid</id>"
+          xml="$xml\
+                <username>$(params.server_user)</username>\
+                <password>$(params.server_password)</password>"
+          xml="$xml\
+              </server>"
+          sed -i "s|<!-- ### SERVER's USER INFO from ENV ### -->|$xml|" $(workspaces.maven-settings.path)/settings.xml
+        fi
+
+        if [ -n "$(params.maven_mirror_url)" ]; then
+          xml="    <mirror>\
+            <id>mirror.default</id>\
+            <url>$(params.maven_mirror_url)</url>\
+            <mirrorOf>central</mirrorOf>\
+          </mirror>"
+          sed -i "s|<!-- ### mirrors from ENV ### -->|$xml|" $(workspaces.maven-settings.path)/settings.xml
+        fi
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+    - args:
+        - '-s'
+        - $(workspaces.maven-settings.path)/settings.xml
+        - $(params.goals)
+        - $(params.opt_params)
+      command:
+        - /usr/bin/mvn
+      computeResources: {}
+      env:
+        - name: HOME
+          value: /tekton/home
+      image: $(params.maven_image)
+      name: mvn-goals
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+      workingDir: $(workspaces.source.path)/$(params.project_dir)/$(params.context_dir)
+  workspaces:
+    - description: The workspace consisting of maven project.
+      name: source
+    - description: The workspace consisting of the custom maven settings provided by the user.
+      name: maven-settings
