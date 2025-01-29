@@ -37,9 +37,9 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 9001
 
-secret:
+secrets:
   POSTGRES_DB_PASSWORD: springboot-admin
   POSTGRES_DB_URL: jdbc:postgresql://postgresql-demo.vps-apps.svc.cluster.local:5432/springboot-todo-app
   POSTGRES_DB_USERNAME: springboot-admin
@@ -62,14 +62,14 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
+# livenessProbe:
+#   httpGet:
+#     path: /
+#     port: 9001
+# readinessProbe:
+#   httpGet:
+#     path: /
+#     port: 9001
 
 autoscaling:
   enabled: false

@@ -48,7 +48,16 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
          
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-         
+          
+          env:
+          {{- range $key, $value := .Values.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "todo-app.fullname" $ }}
+                  key: {{ $key }}
+          {{- end }}
+
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
