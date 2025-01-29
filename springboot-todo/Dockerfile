@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi9/openjdk-17
 WORKDIR /app
 
 # # Copy the jar file from the build stage
-COPY /app/target/todo-app.jar todo-app.jar
+COPY ./target/todo-app.jar todo-app.jar
 
 # Expose the port the application will run on
 EXPOSE 9001
