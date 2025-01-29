@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  
+  name: spring-boot-todo
+
+  labels:
+    app: spring-boot-todo
+    app.openshift.io/runtime: spring-boot
+
+spec:
+
+  replicas: 1
+
+  selector:
+    matchLabels:
+        app: spring-boot-todo
+
+  template:
+    metadata:
+      labels: 
+        app: spring-boot-todo
+
+    spec:
+
+      containers:
+        - name: spring-boot-todo
+
+          image: 'quay.io/mugicoder13/spring-boot-todo'
+
+          ports:
+            - name: http
+              containerPort: 9001
+              protocol: TCP
+
+          resources:
+            requests:
+              cpu: 460m
+              memory: 550Mi
+            limits:
+              cpu: 500m
+              memory: 600Mi
