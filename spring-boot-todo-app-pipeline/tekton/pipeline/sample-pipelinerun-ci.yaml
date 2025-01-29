@@ -3,9 +3,7 @@ kind: PipelineRun
 
 metadata:
 
-  name: springboot-todo-ci-hdb40e
-
-  namespace: tekton-demo
+  name: springboot-todo-ci
 
   finalizers:
     - chains.tekton.dev/pipelinerun
@@ -45,17 +43,8 @@ spec:
 
   workspaces:
     - name: maven-settings
-      volumeClaimTemplate:
-        metadata:
-          creationTimestamp: null
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 1Gi
-          storageClassName: ocs-storagecluster-ceph-rbd
-          volumeMode: Filesystem
+      persistentVolumeClaim:
+        claimName: spring-boot-mvn
 
     - name: sourcecode
       persistentVolumeClaim:

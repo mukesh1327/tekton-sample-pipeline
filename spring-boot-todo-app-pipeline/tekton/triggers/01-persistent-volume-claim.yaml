@@ -12,6 +12,20 @@ spec:
       storage: 250Mi
   volumeMode: Filesystem
 
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: spring-boot-mvn
+  labels:
+    app: spring-boot-todo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 250Mi
+  volumeMode: Filesystem
 # ---
 
 # kind: PersistentVolumeClaim
