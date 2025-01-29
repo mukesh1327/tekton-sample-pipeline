@@ -75,7 +75,7 @@ spec:
         ENTITLEMENT_VOLUME=""
 
         SHORT_COMMIT_ID=$(echo $(params.image_tag) | cut -c 1-7)
-        image_tag=$(params.env_image_tag)${SHORT_COMMIT_ID}
+        image_tag=${SHORT_COMMIT_ID}
 
 
         if [[ "$(workspaces.rhel-entitlement.bound)" == "true" ]]; then

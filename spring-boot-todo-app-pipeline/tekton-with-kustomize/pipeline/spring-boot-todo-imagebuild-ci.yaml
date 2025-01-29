@@ -1,0 +1,103 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: springboot-todo-ci
+  
+spec:
+  params:
+    - description: url of the git source code repo for the code of deployment
+      name: GIT_SOURCECODE_URL
+      type: string
+
+    - default: main
+      description: revision to be used from repo of the code for deployment
+      name: GIT_SOURCECODE_REVISION
+      type: string
+
+    - description: Source code Project directory
+      name: SOURCECODE_DIR
+      type: string
+
+    - description: Git user name for pushing the code
+      name: GIT_USER_NAME
+      type: string
+
+    - description: Git user email for pushing the code
+      name: GIT_USER_EMAIL
+      type: string
+
+    - description: Dockerfile path in the project source
+      name: DOCKERFILE_PATH
+      type: string
+
+    - description: Name and tag for the application container image
+      name: IMAGE
+      type: string
+
+    - description: Name and tag for the application container image
+      name: IMAGE_TAG_COMMITID
+      type: string
+
+    - description: Name and tag for the application container image
+      name: IMAGE_TAG_ENV
+      type: string
+
+  tasks:
+
+    - name: fetch-sourcecode
+      params:
+        - name: url
+          value: $(params.GIT_SOURCECODE_URL)
+        - name: revision
+          value: $(params.GIT_SOURCECODE_REVISION)
+        - name: sparseCheckoutDirectories
+          value: $(params.SOURCECODE_DIR)
+      taskRef:
+        kind: Task
+        name: git-task
+      workspaces:
+        - name: output
+          workspace: sourcecode
+
+    - name: maven-package
+      params:
+        - name: goals
+          value:
+            - package
+        - name: opt_params
+          value: '-DskipTests=True'
+        - name: project_dir
+          value: $(params.SOURCECODE_DIR)
+      runAfter:
+        - fetch-sourcecode
+      taskRef:
+        kind: Task
+        name: maven-task
+      workspaces:
+        - name: source
+          workspace: sourcecode
+        - name: maven-settings
+          workspace: maven-settings
+
+    - name: image-build-push
+      params:
+        - name: dockerfile
+          value: $(params.DOCKERFILE_PATH)
+        - name: image
+          value: $(params.IMAGE)
+        - name: image_tag
+          value: $(params.IMAGE_TAG_COMMITID)
+        - name: project_dir
+          value: $(params.SOURCECODE_DIR)
+      runAfter:
+        - maven-package
+      taskRef:
+        kind: Task
+        name: imagebuild-task
+      workspaces:
+        - name: source
+          workspace: sourcecode
+
+  workspaces:
+    - name: maven-settings
+    - name: sourcecode

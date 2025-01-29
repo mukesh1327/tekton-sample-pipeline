@@ -25,7 +25,7 @@ spec:
             name: github
         - params:
             - name: filter
-              value: extensions.changed_files.matches('src/')
+              value: extensions.changed_files.matches('springboot-todo/src/')
           ref:
             kind: ClusterInterceptor
             name: cel

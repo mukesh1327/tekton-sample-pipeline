@@ -16,31 +16,28 @@ spec:
       spec:
         params:
           - name: GIT_SOURCECODE_URL
-            value: 'https://github.com/mugicoder13/spring-boot-todo.git'
+            value: 'https://github.com/mukesh1327/tekton-sample-pipeline.git'
+
           - name: GIT_SOURCECODE_REVISION
-            value: development
-          - name: SOURCECODE_DIR
-            value: .
-          - name: DOCKERFILE_PATH
-            value: Dockerfile
-          - name: GIT_DEPLOYMENT_MANIFESTS_URL
-            value: 'https://github.com/mugicoder13/observai-gitops.git'
-          - name: GIT_DEPLOYMENT_MANIFESTS_REVISION
             value: main
-          - name: DEPLOYMENT_MANIFESTS_DIR
-            value: kustomize/overlays/dev
+
+          - name: SOURCECODE_DIR
+            value: springboot-todo
+
+          - name: DOCKERFILE_PATH
+            value: springboot-todo/Dockerfile
+
           - name: GIT_USER_NAME
             value: mukesh1327
+
           - name: GIT_USER_EMAIL
             value: mugicoder13@gmail.com
+
           - name: IMAGE
-            value: quay.io/mugicoder13/spring-boot-todo-observai
-          - name: OLD_IMAGE
-            value: $(params.IMAGE)
+            value: quay.io/mukeshs1306/springboot-todo-app
+
           - name: IMAGE_TAG_COMMITID
             value: $(tt.params.GIT_HEADCOMMIT_ID)
-          - name: IMAGE_TAG_ENV
-            value: java-
 
         pipelineRef:
           name: spring-boot-todo
@@ -49,7 +46,3 @@ spec:
           - name: sourcecode
             persistentVolumeClaim:
               claimName: spring-boot-todo-ci
-
-          - name: deployment-manifests
-            persistentVolumeClaim:
-              claimName: spring-boot-todo-cd
