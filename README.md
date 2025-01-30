@@ -1,9 +1,33 @@
+
 # Tekton CI CD pipeline build
 
-In this demo a todo application is built using spring boot and deployed in openshift platform using tekton pipeline
+In this demo a todo application is built using spring boot with postgresql and deployed in openshift platform using tekton pipeline
 
-## Using Kustomize and ArgoCD
+Endpoints to try 
+
+POST /api/tasks/create (to create a task)
+
+    {
+    "title": "Sample Task",
+    "description": "Description of the task"
+    }
+
+GET /api/tasks/read (to get all tasks)
 
 
+GET /api/tasks/get/{taskId} (to get a task by ID)
 
-## Using Helm Charts and ArgoCD
+
+PUT /api/tasks/update/{taskId} (to update a task)
+
+    {
+    "title": "Updated Task",
+    "description": "Updated description"
+    }
+
+DELETE /api/tasks/delete/{taskId} (to delete a task)
+
+
+## Using Helm Charts
+
+<!-- helm upgrade --wait --install --namespace "vps-apps" todo-app spring-boot-todo-app-pipeline/helm  --debug --set replicaCount=3,image.tag=add99de -->

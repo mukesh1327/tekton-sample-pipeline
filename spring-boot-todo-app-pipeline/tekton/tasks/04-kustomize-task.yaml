@@ -65,6 +65,7 @@ spec:
 
         echo "Updated the image $(params.new_image_name) with tag $(params.env_image_tag)${SHORT_COMMIT_ID}"
       workingDir: $(workspaces.source.path)/$(params.kustomize_dir)
+      
     - computeResources: {}
       image: $(params.kustomizeGitImage)
       name: push-update

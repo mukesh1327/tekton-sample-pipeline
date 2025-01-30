@@ -36,3 +36,17 @@ spec:
         argocd login --username=${ARGOCD_USERNAME} --password=${ARGOCD_PASSWORD} ${ARGOCD_SERVER} --insecure ;
 
         argocd app sync $(params.application-name) --revision $(params.revision)
+
+
+# pipeline
+#     - name: argocd-sync-and-wait
+#       params:
+#         - name: application-name
+#           value: apm-dev
+#         - name: revision
+#           value: main
+#       runAfter:
+#         - kustomize-update-imagetag
+#       taskRef:
+#         kind: Task
+#         name: argocd-sync-and-wait-task

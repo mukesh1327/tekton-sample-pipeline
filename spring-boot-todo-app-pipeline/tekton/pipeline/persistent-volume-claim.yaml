@@ -1,0 +1,44 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: spring-boot-todo-ci
+  labels:
+    app: spring-boot-todo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 250Mi
+  volumeMode: Filesystem
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: spring-boot-mvn
+  labels:
+    app: spring-boot-todo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 250Mi
+  volumeMode: Filesystem
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: spring-boot-todo-cd
+  labels:
+    app: spring-boot-todo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  volumeMode: Filesystem

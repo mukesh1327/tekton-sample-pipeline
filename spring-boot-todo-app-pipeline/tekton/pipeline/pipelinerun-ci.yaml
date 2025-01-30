@@ -1,0 +1,49 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+
+metadata:
+
+  name: springboot-todo
+
+  finalizers:
+    - chains.tekton.dev/pipelinerun
+
+  labels:
+    tekton.dev/pipeline: springboot-todo
+
+spec:
+  params:
+    - name: GIT_SOURCECODE_URL
+      value: 'https://github.com/mukesh1327/tekton-sample-pipeline.git'
+    - name: GIT_SOURCECODE_REVISION
+      value: main
+    - name: SOURCECODE_DIR
+      value: springboot-todo
+    - name: GIT_USER_NAME
+      value: mukesh1327
+    - name: GIT_USER_EMAIL
+      value: mugicoder13@gmail.com
+    - name: DOCKERFILE_PATH
+      value: Dockerfile
+    - name: IMAGE
+      value: 'quay.io/mukeshs1306/springboot-todo-app'
+    - name: IMAGE_TAG_COMMITID
+      value: 'add99de'
+
+  pipelineRef:
+    name: springboot-todo-ci
+
+  taskRunTemplate:
+    serviceAccountName: pipeline
+
+  timeouts:
+    pipeline: 0h30m0s
+
+  workspaces:
+    - name: maven-settings
+      persistentVolumeClaim:
+        claimName: spring-boot-mvn
+
+    - name: sourcecode
+      persistentVolumeClaim:
+        claimName: spring-boot-todo-ci

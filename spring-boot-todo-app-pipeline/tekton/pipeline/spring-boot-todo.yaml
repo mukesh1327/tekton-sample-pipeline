@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: spring-boot-todo
-  
+
 spec:
   params:
     - description: url of the git source code repo for the code of deployment
@@ -25,6 +25,19 @@ spec:
     - description: Deployment manifests directory
       name: DEPLOYMENT_MANIFESTS_DIR
       type: string
+    - description: Helm chart directory
+      name: HELM_CHART_DIR
+      type: string
+    - description: Helm release name
+      name: HELM_RELEASE_NAME
+      type: string
+    - description: Helm release namespace
+      name: HELM_RELEASE_NAMESPACE
+      type: string
+    - description: Helm release values overwrite
+      name: OVERWRITE_VALUES
+      type: string
+      default: ''
     - description: Git user name for pushing the code
       name: GIT_USER_NAME
       type: string
@@ -38,13 +51,7 @@ spec:
       name: IMAGE
       type: string
     - description: Name and tag for the application container image
-      name: OLD_IMAGE
-      type: string
-    - description: Name and tag for the application container image
       name: IMAGE_TAG_COMMITID
-      type: string
-    - description: Name and tag for the application container image
-      name: IMAGE_TAG_ENV
       type: string
 
   tasks:
@@ -85,7 +92,7 @@ spec:
           value:
             - package
         - name: opt_params
-          value: '-Dquarkus.profile=prod'
+          value: '-DskipTests'
         - name: project_dir
           value: $(params.SOURCECODE_DIR)
       runAfter:
@@ -108,8 +115,6 @@ spec:
           value: $(params.IMAGE)
         - name: image_tag
           value: $(params.IMAGE_TAG_COMMITID)
-        - name: env_image_tag
-          value: $(params.IMAGE_TAG_ENV)
         - name: project_dir
           value: $(params.SOURCECODE_DIR)
       runAfter:
@@ -121,44 +126,29 @@ spec:
         - name: source
           workspace: sourcecode
 
-    - name: kustomize-update-imagetag
+    - name: helm-upgrade-install
       params:
-        - name: kustomize_dir
-          value: $(params.DEPLOYMENT_MANIFESTS_DIR)
-        - name: old_image_name
-          value: $(params.IMAGE)
-        - name: new_image_name
-          value: $(params.IMAGE)
         - name: image_tag
           value: $(params.IMAGE_TAG_COMMITID)
-        - name: env_image_tag
-          value: $(params.IMAGE_TAG_ENV)
-        - name: git_user_name
-          value: $(params.GIT_USER_NAME)
-        - name: git_user_email
-          value: $(params.GIT_USER_EMAIL)
-        - name: git_revision
-          value: $(params.GIT_DEPLOYMENT_MANIFESTS_REVISION)
+        - name: helm_dir
+          value: $(params.DEPLOYMENT_MANIFESTS_DIR)
+        - name: chart_name
+          value: $(params.HELM_CHART_DIR)
+        - name: release_name
+          value: $(params.HELM_RELEASE_NAME)
+        - name: release_namespace
+          value: $(params.HELM_RELEASE_NAMESPACE)
+        - name: overwrite_values
+          value: $(params.OVERWRITE_VALUES) 
       runAfter:
         - image-build-push
       taskRef:
         kind: Task
-        name: kustomize-update-imagetag-task
+        name: helm-upgrade-from-git
       workspaces:
         - name: source
           workspace: deployment-manifests
 
-    - name: argocd-sync-and-wait
-      params:
-        - name: application-name
-          value: apm-dev
-        - name: revision
-          value: main
-      runAfter:
-        - kustomize-update-imagetag
-      taskRef:
-        kind: Task
-        name: argocd-sync-and-wait-task
   workspaces:
     - name: maven-settings
     - name: sourcecode

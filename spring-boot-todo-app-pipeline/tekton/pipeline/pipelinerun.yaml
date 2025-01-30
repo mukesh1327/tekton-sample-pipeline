@@ -1,16 +1,12 @@
 apiVersion: tekton.dev/v1
 kind: PipelineRun
-
 metadata:
-
-  name: springboot-todo-ci
-
+  name: spring-boot-todo-pr
+  namespace: vps-apps
   finalizers:
     - chains.tekton.dev/pipelinerun
-
   labels:
-    tekton.dev/pipeline: springboot-todo-ci
-
+    tekton.dev/pipeline: spring-boot-todo
 spec:
   params:
     - name: GIT_SOURCECODE_URL
@@ -19,6 +15,20 @@ spec:
       value: main
     - name: SOURCECODE_DIR
       value: springboot-todo
+    - name: GIT_DEPLOYMENT_MANIFESTS_URL
+      value: 'https://github.com/mukesh1327/tekton-sample-pipeline.git'
+    - name: GIT_DEPLOYMENT_MANIFESTS_REVISION
+      value: main
+    - name: DEPLOYMENT_MANIFESTS_DIR
+      value: spring-boot-todo-app-pipeline/helm
+    - name: HELM_CHART_DIR
+      value: spring-boot-todo-app-pipeline/helm
+    - name: HELM_RELEASE_NAME
+      value: springboot-todo
+    - name: HELM_RELEASE_NAMESPACE
+      value: vps-apps
+    - name: OVERWRITE_VALUES
+      value: ''
     - name: GIT_USER_NAME
       value: mukesh1327
     - name: GIT_USER_EMAIL
@@ -26,26 +36,22 @@ spec:
     - name: DOCKERFILE_PATH
       value: Dockerfile
     - name: IMAGE
-      value: 'quay.io/mukeshs1306/springboot-todo-app'
+      value: quay.io/mukeshs1306/springboot-todo-app
     - name: IMAGE_TAG_COMMITID
-      value: 'add99de'
-    - name: IMAGE_TAG_ENV
-      value: demo-
-
+      value: latest
   pipelineRef:
-    name: springboot-todo-ci
-
+    name: spring-boot-todo
   taskRunTemplate:
     serviceAccountName: pipeline
-
   timeouts:
     pipeline: 0h30m0s
-
   workspaces:
     - name: maven-settings
       persistentVolumeClaim:
         claimName: spring-boot-mvn
-
     - name: sourcecode
       persistentVolumeClaim:
         claimName: spring-boot-todo-ci
+    - name: deployment-manifests
+      persistentVolumeClaim:
+        claimName: spring-boot-todo-cd
