@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: springboot-todo-s2i-pr
+  namespace: vps-apps
+  finalizers:
+    - chains.tekton.dev/pipelinerun
+  labels:
+    app.kubernetes.io/instance: springboot-todo-s2i-git
+    app.kubernetes.io/name: springboot-todo-s2i-git
+    operator.tekton.dev/operand-name: openshift-pipelines-addons
+    pipeline.openshift.io/runtime: java
+    pipeline.openshift.io/runtime-version: openjdk-17-ubi8
+    
+spec:
+  params:
+    - name: APP_NAME
+      value: springboot-todo-s2i-git
+    - name: GIT_REPO
+      value: 'https://github.com/mukesh1327/springboot-todo-s2i.git'
+    - name: GIT_REVISION
+      value: main
+    - name: IMAGE_NAME
+      value: 'image-registry.openshift-image-registry.svc:5000/vps-apps/springboot-todo-s2i-git'
+    - name: PATH_CONTEXT
+      value: springboot-todo
+    - name: VERSION
+      value: openjdk-17-ubi8
+  pipelineRef:
+    name: springboot-todo-s2i-git
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+    - name: workspace
+      persistentVolumeClaim:
+        claimName: springboot-todo-s2i

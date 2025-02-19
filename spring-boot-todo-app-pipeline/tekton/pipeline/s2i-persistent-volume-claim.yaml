@@ -1,0 +1,17 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+
+  name: springboot-todo-s2i-git
+  namespace: vps-apps
+
+  labels:
+    tekton.dev/pipeline: springboot-todo-s2i-git
+
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
