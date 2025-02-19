@@ -100,6 +100,5 @@ spec:
         kind: ClusterTask
         name: openshift-client
 
-
   workspaces:
     - name: workspace
