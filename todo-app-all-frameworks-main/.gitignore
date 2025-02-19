@@ -1,0 +1,16 @@
+nodejs-todo/node_modules/*
+
+quarkus-todo/target/*
+
+springboot-todo/target/*
+
+django_todo/__pycache__/*
+
+dotnet-todo/bin/*
+django_todo/django_todo/__pycache__/*
+django_todo/djangotodo/__pycache__/*
+django_todo/djangotodo/migrations/__pycache__/*
+dotnet-todo/obj/Debug/*
+dotnet-todo/obj/*
+
+.vscode
