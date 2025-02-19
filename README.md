@@ -8,9 +8,12 @@ Endpoints to try
 POST /api/tasks/create (to create a task)
 
     {
-    "title": "Sample Task",
-    "description": "Description of the task"
+        "name": "Test Task",
+        "description": "This is a sample task",
+        "status": "PENDING",
+        "dueDate": "2025-02-19T00:00:00Z"
     }
+
 
 GET /api/tasks/read (to get all tasks)
 
