@@ -17,7 +17,7 @@ spec:
     - name: APP_NAME
       value: springboot-todo-s2i-git
     - name: GIT_REPO
-      value: 'https://github.com/mukesh1327/springboot-todo-s2i.git'
+      value: 'https://github.com/mukesh1327/tekton-sample-pipeline.git'
     - name: GIT_REVISION
       value: main
     - name: IMAGE_NAME
