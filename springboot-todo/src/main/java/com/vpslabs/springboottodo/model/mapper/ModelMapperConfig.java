@@ -1,4 +1,4 @@
-package com.zagaopc.springboottodo.model.mapper;
+package com.vpslabs.springboottodo.model.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

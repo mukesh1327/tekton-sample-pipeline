@@ -1,4 +1,4 @@
-package com.zagaopc.springboottodo.controller;
+package com.vpslabs.springboottodo.controller;
 
 import java.util.List;
 
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zagaopc.springboottodo.controller.wrapper.TaskResponse;
-import com.zagaopc.springboottodo.exception.TasksExceptions.TaskAlreadyExistsException;
-import com.zagaopc.springboottodo.exception.TasksExceptions.TaskNotFoundException;
-import com.zagaopc.springboottodo.exception.TasksExceptions.UnableToCreateTaskException;
-import com.zagaopc.springboottodo.model.dto.TasksDto;
-import com.zagaopc.springboottodo.service.TasksService;
+import com.vpslabs.springboottodo.controller.wrapper.TaskResponse;
+import com.vpslabs.springboottodo.exception.TasksExceptions.TaskAlreadyExistsException;
+import com.vpslabs.springboottodo.exception.TasksExceptions.TaskNotFoundException;
+import com.vpslabs.springboottodo.exception.TasksExceptions.UnableToCreateTaskException;
+import com.vpslabs.springboottodo.model.dto.TasksDto;
+import com.vpslabs.springboottodo.service.TasksService;
 
 @RestController
 @RequestMapping("/api/tasks")

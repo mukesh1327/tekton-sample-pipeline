@@ -1,10 +1,10 @@
-package com.zagaopc.springboottodo.model.mapper;
+package com.vpslabs.springboottodo.model.mapper;
 
 // import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-import com.zagaopc.springboottodo.model.dto.TasksDto;
-import com.zagaopc.springboottodo.model.entity.Tasks;
+import com.vpslabs.springboottodo.model.dto.TasksDto;
+import com.vpslabs.springboottodo.model.entity.Tasks;
 
 public interface TasksMapper {
 

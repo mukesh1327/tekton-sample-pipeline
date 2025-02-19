@@ -1,4 +1,4 @@
-package com.zagaopc.springboottodo.exception;
+package com.vpslabs.springboottodo.exception;
 
 public class TasksExceptions {
     

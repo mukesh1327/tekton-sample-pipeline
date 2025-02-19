@@ -1,10 +1,10 @@
-package com.zagaopc.springboottodo.service;
+package com.vpslabs.springboottodo.service;
 
 import java.util.List;
 
-import com.zagaopc.springboottodo.controller.wrapper.TaskResponse;
-import com.zagaopc.springboottodo.model.dto.TasksDto;
-import com.zagaopc.springboottodo.model.entity.Tasks;
+import com.vpslabs.springboottodo.controller.wrapper.TaskResponse;
+import com.vpslabs.springboottodo.model.dto.TasksDto;
+import com.vpslabs.springboottodo.model.entity.Tasks;
 
 public interface TasksService {
     TasksDto convertToDTO(Tasks task);

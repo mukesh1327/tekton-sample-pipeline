@@ -1,8 +1,8 @@
-package com.zagaopc.springboottodo.model.dto;
+package com.vpslabs.springboottodo.model.dto;
 
 import java.util.Date;
 
-import com.zagaopc.springboottodo.model.entity.TasksStatusEnum;
+import com.vpslabs.springboottodo.model.entity.TasksStatusEnum;
 
 import lombok.Data;
 

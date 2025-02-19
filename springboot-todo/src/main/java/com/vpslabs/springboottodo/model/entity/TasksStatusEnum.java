@@ -1,4 +1,4 @@
-package com.zagaopc.springboottodo.model.entity;
+package com.vpslabs.springboottodo.model.entity;
 
 /**
  * enum to represents the task status.

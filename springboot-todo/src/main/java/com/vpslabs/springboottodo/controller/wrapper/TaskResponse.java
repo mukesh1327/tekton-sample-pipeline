@@ -1,6 +1,6 @@
-package com.zagaopc.springboottodo.controller.wrapper;
+package com.vpslabs.springboottodo.controller.wrapper;
 
-import com.zagaopc.springboottodo.model.dto.TasksDto;
+import com.vpslabs.springboottodo.model.dto.TasksDto;
 
 public class TaskResponse {
     private TasksDto tasksDto;

@@ -1,4 +1,4 @@
-package com.zagaopc.springboottodo.model.entity;
+package com.vpslabs.springboottodo.model.entity;
 
 import java.util.Date;
 

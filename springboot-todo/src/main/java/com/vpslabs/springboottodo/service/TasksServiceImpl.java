@@ -1,4 +1,4 @@
-package com.zagaopc.springboottodo.service;
+package com.vpslabs.springboottodo.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.zagaopc.springboottodo.controller.wrapper.TaskResponse;
-import com.zagaopc.springboottodo.exception.TasksExceptions.TaskAlreadyExistsException;
-import com.zagaopc.springboottodo.exception.TasksExceptions.TaskNotFoundException;
-import com.zagaopc.springboottodo.exception.TasksExceptions.UnableToCreateTaskException;
-import com.zagaopc.springboottodo.model.dto.TasksDto;
-import com.zagaopc.springboottodo.model.entity.Tasks;
-import com.zagaopc.springboottodo.model.entity.TasksStatusEnum;
-import com.zagaopc.springboottodo.repository.TasksRepository;
+import com.vpslabs.springboottodo.controller.wrapper.TaskResponse;
+import com.vpslabs.springboottodo.exception.TasksExceptions.TaskAlreadyExistsException;
+import com.vpslabs.springboottodo.exception.TasksExceptions.TaskNotFoundException;
+import com.vpslabs.springboottodo.exception.TasksExceptions.UnableToCreateTaskException;
+import com.vpslabs.springboottodo.model.dto.TasksDto;
+import com.vpslabs.springboottodo.model.entity.Tasks;
+import com.vpslabs.springboottodo.model.entity.TasksStatusEnum;
+import com.vpslabs.springboottodo.repository.TasksRepository;
 
 @Service
 public class TasksServiceImpl implements TasksService {
