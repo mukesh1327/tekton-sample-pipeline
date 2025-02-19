@@ -80,6 +80,19 @@ spec:
     - name: deploy
       params:
         - name: SCRIPT
+          value: oc apply -f $(params.PATH_CONTEXT)/k8s_manifests
+      runAfter:
+        - build
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+      workspaces:
+        - name: source
+          workspace: workspace
+
+    - name: rollout-apps
+      params:
+        - name: SCRIPT
           value: oc rollout status deploy/$(params.APP_NAME)
       runAfter:
         - build

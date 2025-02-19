@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: todo-app
+  name: springboot-todo-s2i-git
   labels:
-    app: todo-app
+    app: springboot-todo-s2i-git
 spec:
   type: ClusterIP
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: 9001-http
   selector:
-    app: todo-app
+    app: springboot-todo-s2i-git

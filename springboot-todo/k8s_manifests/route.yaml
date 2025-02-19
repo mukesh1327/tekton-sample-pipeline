@@ -1,12 +1,12 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: todo-app
+  name: springboot-todo-s2i-git
 spec:
-  subdomain: todo-app
+  subdomain: springboot-todo-s2i-git
   to:
     kind: Service
-    name: todo-app
+    name: springboot-todo-s2i-git
     weight: 100
   port:
     targetPort: 9001-tcp

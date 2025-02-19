@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   
-  name: todo-app
+  name: springboot-todo-s2i-git
 
   labels:
-    app: todo-app
+    app: springboot-todo-s2i-git
     app.openshift.io/runtime: spring-boot
 
 spec:
@@ -14,12 +14,12 @@ spec:
 
   selector:
     matchLabels:
-        app: todo-app
+        app: springboot-todo-s2i-git
 
   template:
     metadata:
       labels: 
-        app: todo-app
+        app: springboot-todo-s2i-git
 
     spec:
 
@@ -45,17 +45,17 @@ spec:
             - name: POSTGRES_DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: todo-app-config
+                  name: springboot-todo-s2i-git
                   key: POSTGRES_DB_USERNAME
 
             - name: POSTGRES_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: todo-app-config
+                  name: springboot-todo-s2i-git
                   key: POSTGRES_DB_PASSWORD
 
             - name: POSTGRES_DB_URL
               valueFrom:
                 secretKeyRef:
-                  name: todo-app-config
+                  name: springboot-todo-s2i-git
                   key: POSTGRES_DB_URL
