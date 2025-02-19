@@ -72,7 +72,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-				    <!-- <finalName>todo-app</finalName> -->
+				    <finalName>todo-app</finalName>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
